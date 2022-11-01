@@ -4,19 +4,29 @@ const Celebrity = require("../models/Celebrity.model");
 const router = require("express").Router();
 
 // all your routes here
-router.get("/celebrities/create", (req, res, next) => {
+router.get("/create", (req, res, next) => {
     res.render("celebrities/new-celebrity");
   });
 
-router.post("/celebrities/create", async(req, res) => {
+router.post("/create", async(req, res) => {
+  const {name, occupation, catchPhrase} = req.body
   try {
-    const newCelebrity = await Celebrity.create(req.body)
-    console.log("celebrity created")
+   await Celebrity.create({name, occupation, catchPhrase})
     res.redirect("/celebrities")
   } catch (err) {
     console.log(err)
-    res.render("/celebrities/create")
+    res.render("/celebrities/new-celebrity")
   }
 })
+
+router.get("/", async(req, res, next) => {
+  try {
+    const celebrities = await Celebrity.find({})
+    console.log(celebrities)
+    res.render("celebrities/celebrities", {celebrities})
+  }catch (err) {
+    console.log(err)
+  }
+});
 
 module.exports = router;
